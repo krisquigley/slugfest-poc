@@ -1,0 +1,13 @@
+<div>
+  <b>SKU:</b> <%= @product.sku %><br/>
+  <b>Slug:</b> <%= @product.slug %><br/>
+  <b>Slug History:</b> 
+    <ul>
+      <% @product.slugs.where(active: false).each do |slug| %>
+        <li><%= slug.computed_slug %></li>
+      <% end %>
+    </ul>
+  <br/>
+</div>
+<br/>
+<%= link_to "All Products", products_path, class: "btn btn-primary" %>

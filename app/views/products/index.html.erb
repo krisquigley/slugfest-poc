@@ -1,0 +1,6 @@
+<ul class="list-unstyled">
+  <% @products.each do |product| %>
+    <li><%= link_to product.sku, product.slug %></li>
+  <% end %>
+</ul>
+<%= link_to "Add Product", new_product_path, class: "btn btn-success" %>

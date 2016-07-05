@@ -1,0 +1,7 @@
+<%= form_for @admin do |f| %>
+  <div class="form-group">
+    <%= f.label :product_slug %>
+    <%= f.text_field :product_slug, class: 'form-control' %>
+  </div>
+  <%= f.submit class: 'btn btn-success' %>
+<% end %>

@@ -1,0 +1,15 @@
+<%= form_for @product do |f| %>
+  <div class="form-group">
+    <%= f.label :sku %>
+    <%= f.text_field :sku, class: "form-control" %>
+  </div>
+  <div class="form-group">
+   <div class="form-group">
+    <%= f.label :slug_prefix %>
+    <div class="input-group">
+      <div class="input-group-addon"><%= Product.slug_prefix %>/</div>
+      <%= f.text_field :slug, class: "form-control" %>
+    </div>
+  </div>
+  <%= f.submit class: "btn btn-default" %>
+<% end %>
