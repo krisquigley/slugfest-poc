@@ -1,5 +1,5 @@
 class ProductsController < ApplicationController
-  before_action :find_product, only: [:view, :edit]
+  before_action :find_product, only: [:view, :edit, :update]
 
   def index
     @products = Product.all
@@ -10,7 +10,7 @@ class ProductsController < ApplicationController
   end
 
   def create
-    product = Product.find_or_create_by!(product_params)
+    product = Product.create!(product_params)
 
     redirect_to action: :index
   end
@@ -21,7 +21,7 @@ class ProductsController < ApplicationController
   def update
     @product.update!(product_params)
   
-    redirect_to @product
+    redirect_to action: :index
   end
 
   def destroy
@@ -33,7 +33,7 @@ class ProductsController < ApplicationController
   private
 
   def find_product
-    @product ||= Product.find(params[:id]).includes(:slugs)
+    @product ||= Product.includes(:slugs).find(params[:id])
   end
 
   def product_params

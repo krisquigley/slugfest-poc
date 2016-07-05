@@ -22,7 +22,7 @@ module Sluggable
     validates :slug, presence: true, format: Sluggable.valid_slug_regex
 
     # before persisting, write our external data
-    after_save :update_slug_history, if: :slug_changed?
+    before_save :update_slug_history, if: :slug_changed?
   end
 
   def slug_changed?
@@ -47,7 +47,7 @@ module Sluggable
 
   def update_slug_history
     slug_created = with_transaction_returning_status do
-      self.slugs.create_active_slug!(slug_prefix: self.class.slug_prefix, slug: slug)
+      self.slugs.create_active_slug!(slug_prefix: self.class.slug_prefix, slug: slug, object: self)
     end
 
     unless slug_created
