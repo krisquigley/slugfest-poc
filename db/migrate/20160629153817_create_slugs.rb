@@ -8,8 +8,9 @@ class CreateSlugs < ActiveRecord::Migration
       t.string :computed_slug, null: false
       t.timestamps
 
-      t.index :computed_slug, unique: true, where: "active = true"
       t.index :computed_slug
     end
+
+    add_index :slugs, :computed_slug, unique: true, where: "active = true", name: "active_computed_slug"
   end
 end

@@ -37,6 +37,7 @@ ActiveRecord::Schema.define(version: 20160630121842) do
     t.datetime "updated_at"
   end
 
+  add_index "slugs", ["computed_slug"], name: "active_computed_slug", unique: true, where: "(active = true)", using: :btree
   add_index "slugs", ["computed_slug"], name: "index_slugs_on_computed_slug", using: :btree
   add_index "slugs", ["resource_type", "resource_id"], name: "index_slugs_on_resource_type_and_resource_id", using: :btree
 

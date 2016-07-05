@@ -90,11 +90,22 @@ RSpec.describe Product, type: :model do
     end
 
     it "should be valid" do
-      expect(subject.slugs.find_by(active: true).computed_slug).to eq "#{Product.slug_prefix}/#{subject.slug}"
+      active_slug = subject.slugs.find_by(active: true)
+      expect(active_slug.computed_slug).to eq "#{Product.slug_prefix}/#{active_slug.slug}"
+      
     end
 
     it "should be valid" do
-      expect(subject.slugs.find_by(active: false).computed_slug).to_not eq "#{Product.slug_prefix}/#{subject.slug}"
+      active_slug = subject.slugs.find_by(active: true)
+      expect(subject.slugs.find_by(active: false).computed_slug).to_not eq "#{Product.slug_prefix}/#{active_slug.slug}"
+    end
+
+    context "with an already taken slug" do
+      it "should be invalid" do
+        product = create(:product, slug: subject.slugs.find_by(active: true).slug)
+
+        expect(product).to_not be_valid
+      end
     end
   end
 end
