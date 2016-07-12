@@ -65,7 +65,7 @@ RSpec.describe Product, type: :model do
     subject { create(:product) }
 
     before do
-      subject.update!(sku: "123abc")
+      subject.update!(sku: "1234abc")
     end
 
     it "should be valid" do
@@ -92,7 +92,6 @@ RSpec.describe Product, type: :model do
     it "should be valid" do
       active_slug = subject.slugs.find_by(active: true)
       expect(active_slug.computed_slug).to eq "#{Product.slug_prefix}/#{active_slug.slug}"
-      
     end
 
     it "should be valid" do

@@ -16,6 +16,8 @@ class ProductsController < ApplicationController
   end
 
   def edit
+    # This is needed otherwise the computed slug is edited rather than the original
+    @product.slug = @product.slugs.find_by(active: true).slug
   end
 
   def update

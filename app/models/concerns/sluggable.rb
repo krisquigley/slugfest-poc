@@ -16,7 +16,7 @@ module Sluggable
   included do
     extend ClassMethods
 
-    has_many :slugs, as: :resource, autosave: true
+    has_many :slugs, as: :resource, validate: true
 
     # ensure our slug is valid BEFORE trying to persist
     validates :slug, presence: true, format: Sluggable.valid_slug_regex
@@ -26,7 +26,7 @@ module Sluggable
   end
 
   def slug_changed?
-    new_record? || (slug != persisted_slug)
+    new_record? || (compute_slug != persisted_slug)
   end
 
   def slug=(value)
@@ -34,20 +34,21 @@ module Sluggable
   end
 
   def slug
-    return @slug if defined?(@slug)
-    @slug = persisted_slug
+    @slug ||= persisted_slug
   end
 
   private
 
   def persisted_slug
-    return @persisted_slug if defined?(@persisted_slug)
     @persisted_slug = slugs.find_by(active: true).try(:computed_slug)
   end
 
   def update_slug_history
-    slug_created = with_transaction_returning_status do
-      self.slugs.create_active_slug!(slug_prefix: self.class.slug_prefix, slug: slug, object: self)
+    slug_created = self.class.transaction do
+      self.slugs.where(active: true).update_all(active: false)
+      self.slugs.build(slug_prefix: self.class.slug_prefix, 
+                       slug: slug, 
+                       computed_slug: compute_slug)
     end
 
     unless slug_created
@@ -55,5 +56,9 @@ module Sluggable
     end
 
     slug_created
+  end
+
+  def compute_slug
+    Slugs::ComputeSlug.call(resource_type: self.class.name, slug: slug)
   end
 end
