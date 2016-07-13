@@ -11,6 +11,7 @@ gem 'jquery-rails'
 gem 'turbolinks'
 gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
+gem 'sidekiq'
 
 group :development, :test do
   gem 'factory_girl_rails'
@@ -20,6 +21,8 @@ group :development, :test do
   gem 'capybara'
   gem 'faker'
   gem 'factory_girl_rspec', '~> 2.1'
+  gem 'rspec-sidekiq'
+  gem 'rspec-expectations'
 end
 
 group :development do

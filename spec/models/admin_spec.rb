@@ -6,28 +6,12 @@ RSpec.describe Admin do
       Product.destroy_all
       Admin.destroy_all
       admin = create(:admin)
-      5.times do 
-        create(:product)
-      end
+      create_list(:product, 2)
       admin.update!(product_slug: 'whatevs')
     end
     
-    it "should update all affected resources" do
-      Product.all.each do |row|
-        expect(row.slugs.count).to eq 2
-      end
-    end
-
-    it "should not change the first slug" do
-      Product.all.each do |row|
-        expect(row.slugs.find_by(active: false).slug_prefix).to_not eq "whatevs"
-      end
-    end
-
-    it "should add a new slug and update the prefix" do
-      Product.all.each do |row|
-        expect(row.slugs.find_by(active: true).slug_prefix).to eq "whatevs"
-      end
+    it "should queue a worker" do
+      expect(Slugs::UpdateSlugPrefixesForActiveSlugsWorker).to have_enqueued_job(resource_type: 'product', slug_prefix: 'whatevs')
     end
   end
 end
