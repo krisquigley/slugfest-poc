@@ -1,7 +1,7 @@
 class Slugs::UpdateSlugPrefixesForActiveSlugs
   attr_accessor :resource_type, :slug_prefix, :slug_computer
 
-  def self.call(resource_type:, slug_prefix:, slug_computer: false)
+  def self.call(resource_type:, slug_prefix:, slug_computer: nil)
     new(resource_type, slug_prefix, slug_computer).call
   end
 
