@@ -26,7 +26,7 @@ module Sluggable
   end
 
   def slug_changed?
-    new_record? || (compute_slug != persisted_slug)
+    new_record? || (computed_slug != persisted_slug)
   end
 
   def slug=(value)
@@ -37,6 +37,10 @@ module Sluggable
     @slug ||= persisted_slug
   end
 
+  def computed_slug 
+    Slugs::ComputeSlug.call(slug_prefix: self.class.slug_prefix, slug: slug)
+  end
+
   private
 
   def persisted_slug
@@ -44,21 +48,10 @@ module Sluggable
   end
 
   def update_slug_history
-    slug_created = self.class.transaction do
-      self.slugs.where(active: true).update_all(active: false)
-      self.slugs.build(slug_prefix: self.class.slug_prefix, 
-                       slug: slug, 
-                       computed_slug: compute_slug)
+    unless Slugs::UpdateSluggableHistory.call(slug_prefix: self.class.slug_prefix, resource: self)
+      self.errors.add(:slug, 'already taken')
+      throw :abort # Rails 5 only
+      raise ActiveRecord::Rollback
     end
-
-    unless slug_created
-      self.errors.add(:slug, "could not be saved, already taken")
-    end
-
-    slug_created
-  end
-
-  def compute_slug
-    Slugs::ComputeSlug.call(resource_type: self.class.name, slug: slug)
   end
 end

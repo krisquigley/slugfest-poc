@@ -1,16 +1,16 @@
 class Slugs::ComputeSlug
-  def self.call(resource_type:, slug: )
-    new(resource_type, slug).call
+  def self.call(slug_prefix:, slug: )
+    new(slug_prefix, slug).call
   end
 
-  attr_accessor :resource_type, :slug
+  attr_accessor :slug_prefix, :slug
 
-  def initialize(resource_type, slug)
-    self.resource_type = resource_type
+  def initialize(slug_prefix, slug)
+    self.slug_prefix = slug_prefix
     self.slug          = slug
   end
 
   def call
-    [resource_type.constantize.slug_prefix, slug].map(&:presence).compact.join('/')
+    [slug_prefix, slug].map(&:presence).compact.join('/')
   end
 end
